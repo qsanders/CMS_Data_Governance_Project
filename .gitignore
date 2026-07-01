@@ -1,8 +1,6 @@
 # Raw data - NEVER TRACK
 data_raw_src/
 
-# Work data - Ignore by default, allow specific summary outputs
-data_work/*
 
 # Python environment & Secrets
 __pycache__/

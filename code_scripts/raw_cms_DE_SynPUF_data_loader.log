@@ -1,0 +1,33 @@
+2026-07-01 16:44:16 - INFO - Starting CMS DE-SynPUF data load process.
+2026-07-01 16:44:16 - INFO - Successfully connected to the database.
+2026-07-01 16:44:16 - INFO - Preparing to load DE1_0_2008_Beneficiary_Summary_File_Sample_2.csv into raw_cms_beneficiary. Limit: [ALL], Size: 100.
+2026-07-01 16:44:24 - INFO - Success: Loaded 116395 records into raw_cms_beneficiary using 'replace'.
+2026-07-01 16:44:24 - INFO - Preparing to load DE1_0_2008_Beneficiary_Summary_File_Sample_3.csv into raw_cms_beneficiary. Limit: [ALL], Size: 100.
+2026-07-01 16:44:31 - INFO - Success: Loaded 116390 records into raw_cms_beneficiary using 'append'.
+2026-07-01 16:44:31 - INFO - Preparing to load DE1_0_2008_Beneficiary_Summary_File_Sample_4.csv into raw_cms_beneficiary. Limit: [ALL], Size: 100.
+2026-07-01 16:44:39 - INFO - Success: Loaded 116279 records into raw_cms_beneficiary using 'append'.
+2026-07-01 16:44:39 - INFO - Preparing to load DE1_0_2009_Beneficiary_Summary_File_Sample_2.csv into raw_cms_beneficiary. Limit: [ALL], Size: 100.
+2026-07-01 16:44:46 - INFO - Success: Loaded 114618 records into raw_cms_beneficiary using 'append'.
+2026-07-01 16:44:46 - INFO - Preparing to load DE1_0_2009_Beneficiary_Summary_File_Sample_3.csv into raw_cms_beneficiary. Limit: [ALL], Size: 100.
+2026-07-01 16:44:53 - INFO - Success: Loaded 114644 records into raw_cms_beneficiary using 'append'.
+2026-07-01 16:44:53 - INFO - Preparing to load DE1_0_2009_Beneficiary_Summary_File_Sample_4.csv into raw_cms_beneficiary. Limit: [ALL], Size: 100.
+2026-07-01 16:45:01 - INFO - Success: Loaded 114528 records into raw_cms_beneficiary using 'append'.
+2026-07-01 16:45:01 - INFO - Preparing to load DE1_0_2010_Beneficiary_Summary_File_Sample_2.csv into raw_cms_beneficiary. Limit: [ALL], Size: 100.
+2026-07-01 16:45:08 - INFO - Success: Loaded 112845 records into raw_cms_beneficiary using 'append'.
+2026-07-01 16:45:08 - INFO - Preparing to load DE1_0_2010_Beneficiary_Summary_File_Sample_3.csv into raw_cms_beneficiary. Limit: [ALL], Size: 100.
+2026-07-01 16:45:15 - INFO - Success: Loaded 112812 records into raw_cms_beneficiary using 'append'.
+2026-07-01 16:45:15 - INFO - Preparing to load DE1_0_2010_Beneficiary_Summary_File_Sample_4.csv into raw_cms_beneficiary. Limit: [ALL], Size: 100.
+2026-07-01 16:45:23 - INFO - Success: Loaded 112699 records into raw_cms_beneficiary using 'append'.
+2026-07-01 16:45:23 - INFO - Preparing to load DE1_0_2008_to_2010_Inpatient_Claims_Sample_2.csv into raw_cms_inpatient_claims. Limit: [1000], Size: 150.
+2026-07-01 16:45:23 - INFO - Success: Loaded 1000 records into raw_cms_inpatient_claims using 'replace'.
+2026-07-01 16:45:23 - INFO - Preparing to load DE1_0_2008_to_2010_Inpatient_Claims_Sample_3.csv into raw_cms_inpatient_claims. Limit: [1000], Size: 150.
+2026-07-01 16:45:23 - INFO - Success: Loaded 1000 records into raw_cms_inpatient_claims using 'append'.
+2026-07-01 16:45:23 - INFO - Preparing to load DE1_0_2008_to_2010_Inpatient_Claims_Sample_4.csv into raw_cms_inpatient_claims. Limit: [1000], Size: 150.
+2026-07-01 16:45:23 - INFO - Success: Loaded 1000 records into raw_cms_inpatient_claims using 'append'.
+2026-07-01 16:45:23 - INFO - Preparing to load DE1_0_2008_to_2010_Outpatient_Claims_Sample_2.csv into raw_cms_outpatient_claims. Limit: [1000], Size: 150.
+2026-07-01 16:45:23 - INFO - Success: Loaded 1000 records into raw_cms_outpatient_claims using 'replace'.
+2026-07-01 16:45:23 - INFO - Preparing to load DE1_0_2008_to_2010_Outpatient_Claims_Sample_3.csv into raw_cms_outpatient_claims. Limit: [1000], Size: 150.
+2026-07-01 16:45:23 - INFO - Success: Loaded 1000 records into raw_cms_outpatient_claims using 'append'.
+2026-07-01 16:45:23 - INFO - Preparing to load DE1_0_2008_to_2010_Outpatient_Claims_Sample_4.csv into raw_cms_outpatient_claims. Limit: [1000], Size: 150.
+2026-07-01 16:45:24 - INFO - Success: Loaded 1000 records into raw_cms_outpatient_claims using 'append'.
+2026-07-01 16:45:24 - INFO - Process complete. Database connection closed.
