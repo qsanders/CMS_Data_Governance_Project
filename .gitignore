@@ -6,3 +6,6 @@ data_raw_src/
 __pycache__/
 .env
 venv/
+
+# Logs
+*.log
