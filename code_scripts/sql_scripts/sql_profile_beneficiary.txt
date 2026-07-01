@@ -1,0 +1,324 @@
+-- [3] Fields with high NULL counts
+SELECT 
+	file_name,
+	field_name,
+	rec_cnt,
+	null_cnt,
+	null_cnt_pct
+FROM raw_cms_profile
+WHERE null_cnt <> '0'
+ORDER BY CAST(null_cnt AS INT) DESC;
+
+
+-- [4] Fields containing special characters
+SELECT 
+	file_name,
+	field_name,
+	rec_cnt,
+	spchr_cnt ,
+	spchr_cnt_pct
+FROM raw_cms_profile
+WHERE spchr_cnt <> '0'
+and cat1 = 'beneficiary'
+ORDER BY CAST(spchr_cnt_pct AS float) DESC;
+
+-- [5] Fields consisting entirely of spaces (hidden NULLs)
+-- This is crucial because "empty string" or "spaces" often hide missing data that isn't caught by a standard NULL check[cite: 1].
+SELECT 
+	file_name,
+	field_name,
+	rec_cnt,
+	space_cnt,
+	space_cnt_pct
+FROM raw_cms_profile
+WHERE space_cnt <> '0'
+and cat1 = 'beneficiary'
+ORDER BY CAST(space_cnt_pct AS float) DESC;
+
+
+-- [6] Fields containing leading spaces
+-- Leading spaces are notorious for breaking SQL JOINs and causing unexpected grouping errors.
+SELECT 
+	file_name,
+	field_name,
+	rec_cnt,
+	ledspc,
+	ledspc_pct
+FROM raw_cms_profile
+WHERE ledspc <> '0'
+and cat1 = 'beneficiary'
+ORDER BY CAST(ledspc_pct AS float) DESC;
+
+
+-- [7] Fields with negative currency values
+-- In Beneficiary profile data, negative monetary values can indicate data entry errors, reversed transactions, or processing artifacts that require investigation[cite: 2].
+SELECT 
+	file_name,
+	field_name,
+	rec_cnt,
+	negcurr_cnt,
+	negcurr_cnt_pct
+FROM raw_cms_profile
+WHERE negcurr_cnt <> '0'
+and cat1 = 'beneficiary'
+ORDER BY CAST(negcurr_cnt AS int) DESC;
+
+
+-- [8] Fields with spaces in the middle of the value
+-- This helps identify formatting inconsistencies in fields that should be contiguous, such as identifiers, codes, or certain dates[cite: 2].
+SELECT 
+	file_name,
+	field_name,
+	rec_cnt,
+	mdlspce_cnt,
+	mdlspce_cnt_pct
+FROM raw_cms_profile
+WHERE mdlspce_cnt <> '0'
+and cat1 = 'beneficiary'
+ORDER BY CAST(mdlspce_cnt_pct AS float) DESC;
+
+
+-- [9] Fields containing mid-string dashes
+-- This helps catch formatting inconsistencies in standard identifiers (like SSNs, Medicare IDs, or phone numbers) that should ideally be stripped of punctuation.
+SELECT 
+	file_name,
+	field_name,
+	rec_cnt,
+	mdldash_cnt,
+	mdldash_cnt_pct
+FROM raw_cms_profile
+WHERE mdldash_cnt <> '0'
+and cat1 = 'beneficiary'
+ORDER BY CAST(mdldash_cnt_pct AS float) DESC;
+
+
+-- [10] Fields with high alphanumeric counts
+-- Looking to see if there are field names in the result that jump out at me as needing to be ALL numeric.
+SELECT 
+	file_name,
+	field_name,
+	rec_cnt,
+	alpnmc_cnt,
+	alpnmc_cnt_pct
+FROM raw_cms_profile
+WHERE alpnmc_cnt <> '0'
+and cat1 = 'beneficiary'
+ORDER BY CAST(alpnmc_cnt_pct AS float) DESC;
+
+
+-- [12] Fields with a low percentage of unique values (Cardinality Check)
+-- Scaning to see if I notice any fields that I feel should have higher unique character counts.
+SELECT 
+	file_name,
+	field_name,
+	rec_cnt,
+	uniqu,
+	uniqu_pct
+FROM raw_cms_profile
+WHERE uniqu <> '0'
+and cat1 = 'beneficiary'
+ORDER BY CAST(uniqu_pct AS float) ASC;
+
+
+-- [13] Fields with high date counts
+-- This quickly isolates date fields so one can ensure fields that shouldn't contain dates haven't been incorrectly parsed or corrupted into date formats.
+SELECT 
+	file_name,
+	field_name,
+	rec_cnt,
+	date_cnt,
+	date_cnt_pct
+FROM raw_cms_profile
+WHERE date_cnt <> '0'
+and cat1 = 'beneficiary'
+ORDER BY CAST(date_cnt_pct AS float) DESC;
+
+
+-- [14] Field level NULL count consistancy between all of the Beneficiaty files
+SELECT 
+    field_name,
+    MAX(CASE WHEN file_name = 'DE1_0_2008_Beneficiary_Summary_File_Sample_2.csv' THEN null_cnt_pct END) AS null_pct_2008_s2,
+    MAX(CASE WHEN file_name = 'DE1_0_2008_Beneficiary_Summary_File_Sample_3.csv' THEN null_cnt_pct END) AS null_pct_2008_s3,
+    MAX(CASE WHEN file_name = 'DE1_0_2008_Beneficiary_Summary_File_Sample_4.csv' THEN null_cnt_pct END) AS null_pct_2008_s4,
+    
+    MAX(CASE WHEN file_name = 'DE1_0_2009_Beneficiary_Summary_File_Sample_2.csv' THEN null_cnt_pct END) AS null_pct_2009_s2,
+    MAX(CASE WHEN file_name = 'DE1_0_2009_Beneficiary_Summary_File_Sample_3.csv' THEN null_cnt_pct END) AS null_pct_2009_s3,
+    MAX(CASE WHEN file_name = 'DE1_0_2009_Beneficiary_Summary_File_Sample_4.csv' THEN null_cnt_pct END) AS null_pct_2009_s4,
+    
+    MAX(CASE WHEN file_name = 'DE1_0_2010_Beneficiary_Summary_File_Sample_2.csv' THEN null_cnt_pct END) AS null_pct_2010_s2,
+    MAX(CASE WHEN file_name = 'DE1_0_2010_Beneficiary_Summary_File_Sample_3.csv' THEN null_cnt_pct END) AS null_pct_2010_s3,
+    MAX(CASE WHEN file_name = 'DE1_0_2010_Beneficiary_Summary_File_Sample_4.csv' THEN null_cnt_pct END) AS null_pct_2010_s4
+FROM raw_cms_profile
+WHERE cat1 = 'beneficiary' 
+    AND file_name IN (
+        'DE1_0_2008_Beneficiary_Summary_File_Sample_2.csv',
+        'DE1_0_2008_Beneficiary_Summary_File_Sample_3.csv',
+        'DE1_0_2008_Beneficiary_Summary_File_Sample_4.csv',
+        'DE1_0_2009_Beneficiary_Summary_File_Sample_2.csv',
+        'DE1_0_2009_Beneficiary_Summary_File_Sample_3.csv',
+        'DE1_0_2009_Beneficiary_Summary_File_Sample_4.csv',
+        'DE1_0_2010_Beneficiary_Summary_File_Sample_2.csv',
+        'DE1_0_2010_Beneficiary_Summary_File_Sample_3.csv',
+        'DE1_0_2010_Beneficiary_Summary_File_Sample_4.csv'
+    )
+GROUP BY field_name
+ORDER BY field_name;
+
+-- [15] Side-by-side comparison of max_len_pct across Beneficiary files
+-- This query aligns the maximum length percentages to ensure fields are visible across all file samples, even if omitted in specific files.
+SELECT 
+    field_name,
+    MAX(CASE WHEN file_name = 'DE1_0_2008_Beneficiary_Summary_File_Sample_2.csv' THEN max_len_pct END) AS max_len_pct_2008_s2,
+    MAX(CASE WHEN file_name = 'DE1_0_2008_Beneficiary_Summary_File_Sample_3.csv' THEN max_len_pct END) AS max_len_pct_2008_s3,
+    MAX(CASE WHEN file_name = 'DE1_0_2008_Beneficiary_Summary_File_Sample_4.csv' THEN max_len_pct END) AS max_len_pct_2008_s4,
+    
+    MAX(CASE WHEN file_name = 'DE1_0_2009_Beneficiary_Summary_File_Sample_2.csv' THEN max_len_pct END) AS max_len_pct_2009_s2,
+    MAX(CASE WHEN file_name = 'DE1_0_2009_Beneficiary_Summary_File_Sample_3.csv' THEN max_len_pct END) AS max_len_pct_2009_s3,
+    MAX(CASE WHEN file_name = 'DE1_0_2009_Beneficiary_Summary_File_Sample_4.csv' THEN max_len_pct END) AS max_len_pct_2009_s4,
+    
+    MAX(CASE WHEN file_name = 'DE1_0_2010_Beneficiary_Summary_File_Sample_2.csv' THEN max_len_pct END) AS max_len_pct_2010_s2,
+    MAX(CASE WHEN file_name = 'DE1_0_2010_Beneficiary_Summary_File_Sample_3.csv' THEN max_len_pct END) AS max_len_pct_2010_s3,
+    MAX(CASE WHEN file_name = 'DE1_0_2010_Beneficiary_Summary_File_Sample_4.csv' THEN max_len_pct END) AS max_len_pct_2010_s4
+FROM raw_cms_profile
+WHERE cat1 = 'beneficiary' 
+    AND file_name IN (
+        'DE1_0_2008_Beneficiary_Summary_File_Sample_2.csv',
+        'DE1_0_2008_Beneficiary_Summary_File_Sample_3.csv',
+        'DE1_0_2008_Beneficiary_Summary_File_Sample_4.csv',
+        'DE1_0_2009_Beneficiary_Summary_File_Sample_2.csv',
+        'DE1_0_2009_Beneficiary_Summary_File_Sample_3.csv',
+        'DE1_0_2009_Beneficiary_Summary_File_Sample_4.csv',
+        'DE1_0_2010_Beneficiary_Summary_File_Sample_2.csv',
+        'DE1_0_2010_Beneficiary_Summary_File_Sample_3.csv',
+        'DE1_0_2010_Beneficiary_Summary_File_Sample_4.csv'
+    )
+GROUP BY field_name
+ORDER BY field_name;
+
+
+-- [16] Side-by-side comparison of min_len_pct across Beneficiary files
+-- This query aligns the minimum length percentages to ensure fields are visible across all file samples, even if omitted in specific files.
+SELECT 
+    field_name,
+    MAX(CASE WHEN file_name = 'DE1_0_2008_Beneficiary_Summary_File_Sample_2.csv' THEN min_len_pct END) AS min_len_pct_2008_s2,
+    MAX(CASE WHEN file_name = 'DE1_0_2008_Beneficiary_Summary_File_Sample_3.csv' THEN min_len_pct END) AS min_len_pct_2008_s3,
+    MAX(CASE WHEN file_name = 'DE1_0_2008_Beneficiary_Summary_File_Sample_4.csv' THEN min_len_pct END) AS min_len_pct_2008_s4,
+    
+    MAX(CASE WHEN file_name = 'DE1_0_2009_Beneficiary_Summary_File_Sample_2.csv' THEN min_len_pct END) AS min_len_pct_2009_s2,
+    MAX(CASE WHEN file_name = 'DE1_0_2009_Beneficiary_Summary_File_Sample_3.csv' THEN min_len_pct END) AS min_len_pct_2009_s3,
+    MAX(CASE WHEN file_name = 'DE1_0_2009_Beneficiary_Summary_File_Sample_4.csv' THEN min_len_pct END) AS min_len_pct_2009_s4,
+    
+    MAX(CASE WHEN file_name = 'DE1_0_2010_Beneficiary_Summary_File_Sample_2.csv' THEN min_len_pct END) AS min_len_pct_2010_s2,
+    MAX(CASE WHEN file_name = 'DE1_0_2010_Beneficiary_Summary_File_Sample_3.csv' THEN min_len_pct END) AS min_len_pct_2010_s3,
+    MAX(CASE WHEN file_name = 'DE1_0_2010_Beneficiary_Summary_File_Sample_4.csv' THEN min_len_pct END) AS min_len_pct_2010_s4
+FROM raw_cms_profile
+WHERE cat1 = 'beneficiary' 
+    AND file_name IN (
+        'DE1_0_2008_Beneficiary_Summary_File_Sample_2.csv',
+        'DE1_0_2008_Beneficiary_Summary_File_Sample_3.csv',
+        'DE1_0_2008_Beneficiary_Summary_File_Sample_4.csv',
+        'DE1_0_2009_Beneficiary_Summary_File_Sample_2.csv',
+        'DE1_0_2009_Beneficiary_Summary_File_Sample_3.csv',
+        'DE1_0_2009_Beneficiary_Summary_File_Sample_4.csv',
+        'DE1_0_2010_Beneficiary_Summary_File_Sample_2.csv',
+        'DE1_0_2010_Beneficiary_Summary_File_Sample_3.csv',
+        'DE1_0_2010_Beneficiary_Summary_File_Sample_4.csv'
+    )
+GROUP BY field_name
+ORDER BY field_name;
+
+
+-- [17] Side-by-side comparison of uniqu_pct across Beneficiary files
+-- This query aligns the unique character percentages to ensure fields are visible across all file samples, even if omitted in specific files.
+SELECT 
+    field_name,
+    MAX(CASE WHEN file_name = 'DE1_0_2008_Beneficiary_Summary_File_Sample_2.csv' THEN uniqu_pct END) AS uniqu_pct_2008_s2,
+    MAX(CASE WHEN file_name = 'DE1_0_2008_Beneficiary_Summary_File_Sample_3.csv' THEN uniqu_pct END) AS uniqu_pct_2008_s3,
+    MAX(CASE WHEN file_name = 'DE1_0_2008_Beneficiary_Summary_File_Sample_4.csv' THEN uniqu_pct END) AS uniqu_pct_2008_s4,
+    
+    MAX(CASE WHEN file_name = 'DE1_0_2009_Beneficiary_Summary_File_Sample_2.csv' THEN uniqu_pct END) AS uniqu_pct_2009_s2,
+    MAX(CASE WHEN file_name = 'DE1_0_2009_Beneficiary_Summary_File_Sample_3.csv' THEN uniqu_pct END) AS uniqu_pct_2009_s3,
+    MAX(CASE WHEN file_name = 'DE1_0_2009_Beneficiary_Summary_File_Sample_4.csv' THEN uniqu_pct END) AS uniqu_pct_2009_s4,
+    
+    MAX(CASE WHEN file_name = 'DE1_0_2010_Beneficiary_Summary_File_Sample_2.csv' THEN uniqu_pct END) AS uniqu_pct_2010_s2,
+    MAX(CASE WHEN file_name = 'DE1_0_2010_Beneficiary_Summary_File_Sample_3.csv' THEN uniqu_pct END) AS uniqu_pct_2010_s3,
+    MAX(CASE WHEN file_name = 'DE1_0_2010_Beneficiary_Summary_File_Sample_4.csv' THEN uniqu_pct END) AS uniqu_pct_2010_s4
+FROM raw_cms_profile
+WHERE cat1 = 'beneficiary' 
+    AND file_name IN (
+        'DE1_0_2008_Beneficiary_Summary_File_Sample_2.csv',
+        'DE1_0_2008_Beneficiary_Summary_File_Sample_3.csv',
+        'DE1_0_2008_Beneficiary_Summary_File_Sample_4.csv',
+        'DE1_0_2009_Beneficiary_Summary_File_Sample_2.csv',
+        'DE1_0_2009_Beneficiary_Summary_File_Sample_3.csv',
+        'DE1_0_2009_Beneficiary_Summary_File_Sample_4.csv',
+        'DE1_0_2010_Beneficiary_Summary_File_Sample_2.csv',
+        'DE1_0_2010_Beneficiary_Summary_File_Sample_3.csv',
+        'DE1_0_2010_Beneficiary_Summary_File_Sample_4.csv'
+    )
+GROUP BY field_name
+ORDER BY field_name;
+
+
+-- [18] The Composite Data Quality Risk Score
+-- This creates a single "Risk Score" by aggregating multiple anomaly percentages. It helps immediately flag the dirtiest fields across the board without having to look at a dozen different queries.
+SELECT 
+    file_name,
+    field_name,
+    rec_cnt,
+    (CAST(null_cnt_pct AS FLOAT) + 
+     CAST(space_cnt_pct AS FLOAT) + 
+     CAST(ledspc_pct AS FLOAT) + 
+     CAST(spchr_cnt_pct AS FLOAT)) AS total_risk_score
+FROM raw_cms_profile
+WHERE cat1 = 'beneficiary'
+ORDER BY total_risk_score DESC;
+
+
+-- [19] Data Type Collision (The "Split Personality" Check)
+-- This isolates fields that are highly populated but split heavily between numeric and alphanumeric formats. This usually indicates unstandardized data entry, mixed encoding, or shifting upstream schemas.
+SELECT 
+    file_name,
+    field_name,
+    rec_cnt,
+    alpnmc_cnt_pct,
+    numrc_cnt_pct
+FROM raw_cms_profile
+WHERE cat1 = 'beneficiary'
+  AND CAST(alpnmc_cnt_pct AS FLOAT) > 10.0 
+  AND CAST(numrc_cnt_pct AS FLOAT) > 10.0
+  AND (CAST(alpnmc_cnt_pct AS FLOAT) + CAST(numrc_cnt_pct AS FLOAT)) > 80.0
+ORDER BY rec_cnt DESC;
+
+
+-- [20] The "Suspiciously Perfect" Identifier Check
+-- This flags fields that claim to be nearly 100% unique but have wild length variances. It catches standard IDs that have been padded, corrupted, or mixed with completely different identifier formats.
+SELECT 
+    file_name,
+    field_name,
+    rec_cnt,
+    uniqu_pct,
+    min_len_pct,
+    max_len_pct
+FROM raw_cms_profile
+WHERE cat1 = 'beneficiary'
+  AND CAST(uniqu_pct AS FLOAT) > 95.0
+  AND (CAST(min_len_pct AS FLOAT) < 50.0 AND CAST(max_len_pct AS FLOAT) < 50.0)
+ORDER BY CAST(uniqu_pct AS FLOAT) DESC;
+
+
+-- [21] High Volume, Zero Nulls, Low Cardinality (The "Default Value" Trap)
+-- This finds fields that are fully populated but contain very few distinct values relative to a massive record count. This is a classic symptom of a system forcing a hardcoded default (like 'N/A' or '0') into a field that should legitimately have nulls.
+SELECT 
+    file_name,
+    field_name,
+    rec_cnt,
+    null_cnt_pct,
+    uniqu
+FROM raw_cms_profile
+WHERE cat1 = 'beneficiary'
+  AND CAST(null_cnt_pct AS FLOAT) = 0.0
+  AND CAST(uniqu AS INT) < 5
+  AND CAST(rec_cnt AS INT) > 10000
+ORDER BY CAST(uniqu AS INT) ASC;
+
