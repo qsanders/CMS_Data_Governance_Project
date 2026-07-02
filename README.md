@@ -193,6 +193,8 @@ NOTE: The permission for the workbook are wide open so feel free to make a copy 
 
 * [CHECKS] tab - Log of all issues found, the category of those issue, and the impact of the issue.
 
+* [Appendix] tab - holds additional information that my be too much to fit in the notes on the CHECKS tab.
+
 * [Report] tab - Summary of the Health of the data and which issue are priority.
 
 
