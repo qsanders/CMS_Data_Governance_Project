@@ -22,6 +22,7 @@ Raw Data Location: [CMS Official SynPUF Page](https://www.cms.gov/data-research/
 
 Quality and Governance Workbook: https://docs.google.com/spreadsheets/d/1ojJ4pg8HakVxw_WWOKRbWEDmxj-CBS7LEx0SUBzOjx8/edit?usp=sharing
 
+<br>
 
 ## Environment Setup
 
