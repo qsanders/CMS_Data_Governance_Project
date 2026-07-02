@@ -208,7 +208,7 @@ Data quality is measured by a scoring system.  Penality point are assigned and b
 The overall Penality score is calculated by ( Category Weight * Business Impact)
 
 ### The Priority
-The priority is calculated by (Category Weigth * Business impact) for each issue.  The latest number become the highest priority and so on ...
+The priority is calculated by (Category Weigth * Business impact) for each issue.  The largest number become the highest priority and so on ...
 * High = Issues to be handled immediately.   
 * MEDIUM = Issue to be handled with 30 days   
 * LOW = Issues to be handled 30 days or more
