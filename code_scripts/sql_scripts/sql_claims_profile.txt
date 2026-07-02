@@ -1,0 +1,29 @@
+-- [23] Looking at an example where there is 3 versions of a beneficiary that can map back to multiple claims
+select *
+from raw_cms_beneficiary rcb
+where rcb."DESYNPUF_ID" = '00000B48BCF4AD29'
+;
+
+select *
+from raw_cms_outpatient_claims 
+where "DESYNPUF_ID" = '00000B48BCF4AD29'
+;
+
+select *
+from raw_cms_inpatient_claims  
+where "DESYNPUF_ID" = '00000B48BCF4AD29'
+;
+
+
+
+-- [] Zero-Payment Claims by Provider
+-- As seen in the sample data, some claims result in a payment amount of $0.00. This query identifies which providers are submitting the most claims that result in zero reimbursement, which could indicate denied claims, bundled payments, or data issues.
+SELECT 
+    "PRVDR_NUM",
+    COUNT("CLM_ID") AS zero_pay_claims_cnt
+FROM raw_cms_inpatient_claims
+WHERE cast("CLM_PMT_AMT" as float) = 0
+GROUP BY "PRVDR_NUM"
+ORDER BY zero_pay_claims_cnt DESC
+LIMIT 10
+;
